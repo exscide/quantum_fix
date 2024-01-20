@@ -1,0 +1,13 @@
+[package]
+name = "quantum_fix"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+debug = "none"
+strip = true
+
+
+[dependencies]
+winsafe = { version = "0.0.19", features = ["kernel", "user"] }
+process-memory = "0.5.0"
