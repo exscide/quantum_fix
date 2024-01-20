@@ -11,3 +11,5 @@ strip = true
 [dependencies]
 winsafe = { version = "0.0.19", features = ["kernel", "user"] }
 process-memory = "0.5.0"
+ratatui = "0.25.0"
+crossterm = "0.27.0"
