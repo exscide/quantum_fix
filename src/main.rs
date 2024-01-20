@@ -1,9 +1,9 @@
-use std::io::{stdout, Result};
+use std::io::{ stdout, Result };
 
-use crossterm::{ExecutableCommand, terminal::{EnterAlternateScreen, enable_raw_mode, LeaveAlternateScreen, disable_raw_mode}, event::{self, KeyEventKind, KeyCode}, cursor::{Hide, Show}};
+use crossterm::{ ExecutableCommand, terminal::{ EnterAlternateScreen, enable_raw_mode, LeaveAlternateScreen, disable_raw_mode }, event::{ self, KeyEventKind, KeyCode }, cursor::{ Hide, Show } };
 use process_memory::{ Pid, TryIntoProcessHandle, PutAddress, ProcessHandle };
-use ratatui::{Terminal, backend::CrosstermBackend, widgets::{Paragraph, LineGauge}, style::{Stylize, Style, Color}, layout::Rect};
-use winsafe::{ GetAsyncKeyState, co::{VK, TH32CS}, prelude::kernel_Hprocesslist, HPROCESSLIST };
+use ratatui::{ Terminal, backend::CrosstermBackend, widgets::{ Paragraph, LineGauge }, style::{ Stylize, Style, Color }, layout::Rect };
+use winsafe::{ GetAsyncKeyState, co::{ VK, TH32CS }, prelude::kernel_Hprocesslist, HPROCESSLIST };
 
 
 const LOGO: &str = "
@@ -96,6 +96,9 @@ fn draw_ui(
 	term.draw(|frame| {
 		let area = frame.size();
 
+
+		// fov bar
+
 		frame.render_widget(
 			Paragraph::new("Field of view (default):")
 			.green(),
@@ -110,6 +113,9 @@ fn draw_ui(
 			.ratio((fov as f64 - MIN_FOV as f64) / (MAX_FOV as f64 - MIN_FOV as f64)),
 			Rect::new(1, 2, area.width - 2, 1),
 		);
+
+
+		// aim fov bar
 
 		frame.render_widget(
 			Paragraph::new("Field of view (when aiming):")
@@ -126,12 +132,6 @@ fn draw_ui(
 			Rect::new(1, 5, area.width - 2, 1),
 		);
 
-
-		frame.render_widget(
-			Paragraph::new(if qb_found { "Quantum Break found" } else { "Looking for Quantum Break..." })
-			.fg(if qb_found { Color::Green } else { Color::Red }),
-			Rect::new(1, 8, area.width - 1, 1),
-		);
 
 		// cursor
 		if selected <= 3 && selected > 0 {
@@ -155,9 +155,16 @@ fn draw_ui(
 			frame.render_widget(
 				Paragraph::new(line)
 				.fg(match i { 0 | 1 => Color::Yellow, _ => Color::DarkGray }),
-				Rect::new((area.width-38) / 2 - 8, area.y + 7 + i as u16, 17, 1),
+				Rect::new(1, area.y + 7 + i as u16, 17, 1),
 			);
 		}
+
+		// quantum break status
+		frame.render_widget(
+			Paragraph::new(if qb_found { "Quantum Break found" } else { "Looking for Quantum Break..." })
+			.fg(if qb_found { Color::Green } else { Color::Red }),
+			Rect::new(1, 11, area.width - 38, 1),
+		);
 
 	})?;
 
